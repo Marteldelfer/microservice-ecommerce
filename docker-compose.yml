@@ -5,9 +5,29 @@ services:
       dockerfile: Dockerfile
     env_file:
       - ./keys/awsKeys
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://product_service_db:5432/db
+      - SPRING_DATASOURCE_USERNAME=username
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_SQL_INIT_MODE=always
     container_name: product_service
     ports:
-      - "8000:8000"
+      - "8001:8080"
+    networks:
+      - internal
+    depends_on:
+      - product_service_db
+
+  product_service_db:
+    image: postgres
+    container_name: product_service_db
+    environment:
+      - POSTGRES_USER=username
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=db
+    ports:
+      - "5001:5432"
     networks:
       - internal
 
