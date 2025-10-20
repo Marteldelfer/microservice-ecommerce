@@ -26,6 +26,7 @@ public class Category {
     private String name;
     private String description;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
     private Set<Product> products;
@@ -33,5 +34,10 @@ public class Category {
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 }
