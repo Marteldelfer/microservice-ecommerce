@@ -13,7 +13,7 @@ services:
       - SPRING_SQL_INIT_MODE=always
     container_name: product_service
     ports:
-      - "8001:8080"
+      - "8001:8000"
     networks:
       - internal
     depends_on:
