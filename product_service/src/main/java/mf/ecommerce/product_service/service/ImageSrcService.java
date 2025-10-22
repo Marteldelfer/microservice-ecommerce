@@ -1,7 +1,7 @@
 package mf.ecommerce.product_service.service;
 
 import lombok.AllArgsConstructor;
-import mf.ecommerce.product_service.dto.ImageSrcRequest;
+import mf.ecommerce.product_service.dto.ImageSrcRequestDto;
 import mf.ecommerce.product_service.dto.ImageSrcResponseDto;
 import mf.ecommerce.product_service.exception.FileSizeExcededLimitException;
 import mf.ecommerce.product_service.exception.ImageSrcNotFoundException;
@@ -39,7 +39,7 @@ public class ImageSrcService {
         ));
     }
 
-    public ImageSrcResponseDto createImageSrc(ImageSrcRequest dto, Product product) {
+    public ImageSrcResponseDto createImageSrc(ImageSrcRequestDto dto, Product product) {
         validateImage(dto.getImage());
         ImageUploadResponse uploadResponse = storageService.uploadImage(dto.getImage());
         ImageSrc imageSrc = ImageSrcMapper.toEntity(dto);
@@ -58,7 +58,7 @@ public class ImageSrcService {
         imageSrcRepository.delete(imageSrc);
     }
 
-    public ImageSrcResponseDto updateImageSrc(UUID id, ImageSrcRequest dto, Product product) {
+    public ImageSrcResponseDto updateImageSrc(UUID id, ImageSrcRequestDto dto, Product product) {
         deleteImageSrc(id);
         return createImageSrc(dto, product);
     }

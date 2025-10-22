@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @AllArgsConstructor
-public class ImageSrcRequest {
+public class ImageSrcRequestDto {
 
     @Size(max = 255, message = "Alt text to long")
     private final String altText;

@@ -1,6 +1,6 @@
 package mf.ecommerce.product_service.mapper;
 
-import mf.ecommerce.product_service.dto.ImageSrcRequest;
+import mf.ecommerce.product_service.dto.ImageSrcRequestDto;
 import mf.ecommerce.product_service.dto.ImageSrcResponseDto;
 import mf.ecommerce.product_service.model.ImageSrc;
 
@@ -16,7 +16,7 @@ public class ImageSrcMapper {
                 .build();
     }
 
-    public static ImageSrc toEntity(ImageSrcRequest dto) {
+    public static ImageSrc toEntity(ImageSrcRequestDto dto) {
         return ImageSrc.builder()
                 .altText(dto.getAltText())
                 .orderIndex(dto.getOrderIndex())
