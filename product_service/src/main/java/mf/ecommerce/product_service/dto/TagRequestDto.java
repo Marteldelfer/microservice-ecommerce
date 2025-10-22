@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public final class TagRequestDto {
+public class TagRequestDto {
 
     @NotBlank(message = "Name is required")
     private final String name;
