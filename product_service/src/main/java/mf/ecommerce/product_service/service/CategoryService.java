@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import mf.ecommerce.product_service.dto.CategoryRequestDto;
 import mf.ecommerce.product_service.dto.CategoryResponseDto;
 import mf.ecommerce.product_service.exception.CategoryNotFoundException;
+import mf.ecommerce.product_service.exception.CategoryWithNameAlreadyExistsException;
 import mf.ecommerce.product_service.mapper.CategoryMapper;
 import mf.ecommerce.product_service.model.Category;
 import mf.ecommerce.product_service.repository.CategoryRepository;
@@ -35,6 +36,9 @@ public class CategoryService {
     }
 
     public CategoryResponseDto createCategory(CategoryRequestDto dto) {
+        if (categoryRepository.existsByName(dto.getName())) {
+            throw new CategoryWithNameAlreadyExistsException("Category with name " + dto.getName() + " already exists");
+        }
         return CategoryMapper.toDto(categoryRepository.save(CategoryMapper.toCategory(dto)));
     }
 

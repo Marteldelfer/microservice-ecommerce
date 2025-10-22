@@ -21,6 +21,7 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(nullable = false, unique = true)
     private String name;
     private String description;
 
@@ -33,6 +34,7 @@ public class Tag {
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = this.createdAt;
     }
 
     @PreUpdate

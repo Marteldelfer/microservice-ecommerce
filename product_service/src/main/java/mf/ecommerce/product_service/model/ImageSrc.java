@@ -23,6 +23,7 @@ public class ImageSrc {
     private String url;
     private String imageKey;
     private String altText;
+    @Column(unique = true)
     private String slug;
     private int orderIndex;
     private LocalDateTime createdAt;

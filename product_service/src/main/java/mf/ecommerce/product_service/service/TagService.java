@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import mf.ecommerce.product_service.dto.TagRequestDto;
 import mf.ecommerce.product_service.dto.TagResponseDto;
 import mf.ecommerce.product_service.exception.TagNotFoundException;
+import mf.ecommerce.product_service.exception.TagWithNameAlreadyExistsException;
 import mf.ecommerce.product_service.mapper.TagMapper;
 import mf.ecommerce.product_service.model.Tag;
 import mf.ecommerce.product_service.repository.TagRepository;
@@ -19,6 +20,9 @@ public class TagService {
     private final TagRepository tagRepository;
 
     public TagResponseDto createTag(TagRequestDto dto) {
+        if (tagRepository.existsByName(dto.getName())) {
+            throw new TagWithNameAlreadyExistsException("Tag with name " + dto.getName() + " already exists");
+        }
         return TagMapper.toDto(tagRepository.save(TagMapper.toTag(dto)));
     }
 
