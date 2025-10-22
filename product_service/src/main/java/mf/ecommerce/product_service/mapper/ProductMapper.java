@@ -2,10 +2,7 @@ package mf.ecommerce.product_service.mapper;
 
 import mf.ecommerce.product_service.dto.ProductRequestDto;
 import mf.ecommerce.product_service.dto.ProductResponseDto;
-import mf.ecommerce.product_service.model.Category;
-import mf.ecommerce.product_service.model.ImageSrc;
 import mf.ecommerce.product_service.model.Product;
-import mf.ecommerce.product_service.model.Tag;
 
 import java.util.ArrayList;
 import java.util.HashSet;
