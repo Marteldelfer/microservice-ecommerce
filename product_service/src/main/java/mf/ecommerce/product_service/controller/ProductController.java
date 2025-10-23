@@ -2,8 +2,7 @@ package mf.ecommerce.product_service.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import mf.ecommerce.product_service.dto.ProductRequestDto;
-import mf.ecommerce.product_service.dto.ProductResponseDto;
+import mf.ecommerce.product_service.dto.*;
 import mf.ecommerce.product_service.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,5 +52,47 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@PathVariable UUID id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/link/tag")
+    public ResponseEntity<ProductResponseDto> linkTag(@Valid @RequestBody LinkTagRequestDto requestDto) {
+        return ResponseEntity.ok(productService.linkTag(requestDto));
+    }
+
+    @PutMapping("/link/category")
+    public ResponseEntity<ProductResponseDto> linkCategory(@Valid @RequestBody LinkCategoryRequestDto requestDto) {
+        return ResponseEntity.ok(productService.linkCategory(requestDto));
+    }
+
+    @PutMapping("/link/image/{productId}")
+    public ResponseEntity<ProductResponseDto> linkImage(
+            @Valid @ModelAttribute ImageSrcRequestDto imageSrcRequestDto,
+            @PathVariable UUID productId
+    ) {
+        return ResponseEntity.ok(productService.linkImageSrc(productId, imageSrcRequestDto));
+    }
+
+    @PutMapping("/unlink/tag")
+    public ResponseEntity<ProductResponseDto> unlinkTag(@Valid @RequestBody LinkTagRequestDto requestDto) {
+        return ResponseEntity.ok(productService.unlinkTag(requestDto));
+    }
+
+    @PutMapping("/unlink/category")
+    public ResponseEntity<ProductResponseDto> unlinkCategory(@Valid @RequestBody LinkCategoryRequestDto requestDto) {
+        return ResponseEntity.ok(productService.unlinkCategory(requestDto));
+    }
+
+    @PutMapping("/unlink/image")
+    public ResponseEntity<ProductResponseDto> unlinkImage(
+            @Valid @RequestBody LinkImageSrcRequestDto requestDto
+    ) {
+        return ResponseEntity.ok(productService.unlinkImageSrc(requestDto));
+    }
+
+    @PutMapping("/link/main-image")
+    public ResponseEntity<ProductResponseDto> updateImage(
+            @Valid @RequestBody LinkImageSrcRequestDto requestDto
+    ) {
+        return ResponseEntity.ok(productService.updateMainImage(requestDto));
     }
 }

@@ -1,5 +1,6 @@
 package mf.ecommerce.product_service.service;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import mf.ecommerce.product_service.dto.ImageSrcRequestDto;
 import mf.ecommerce.product_service.dto.ImageSrcResponseDto;
@@ -39,7 +40,8 @@ public class ImageSrcService {
         ));
     }
 
-    public ImageSrcResponseDto createImageSrc(ImageSrcRequestDto dto, Product product) {
+    @Transactional
+    public ImageSrc createImageSrc(ImageSrcRequestDto dto, Product product) {
         validateImage(dto.getImage());
         ImageUploadResponse uploadResponse = storageService.uploadImage(dto.getImage());
         ImageSrc imageSrc = ImageSrcMapper.toEntity(dto);
@@ -47,20 +49,36 @@ public class ImageSrcService {
         imageSrc.setUrl(uploadResponse.getUrl());
         imageSrc.setImageKey(uploadResponse.getKey());
         imageSrc.setProduct(product);
-        return ImageSrcMapper.toDto(imageSrcRepository.save(imageSrc));
+        return imageSrcRepository.save(imageSrc);
     }
 
     public void deleteImageSrc(UUID id) {
         ImageSrc imageSrc = imageSrcRepository.findById(id).orElseThrow(
                 () -> new ImageSrcNotFoundException("Image src with id " + id + " not found")
         );
-        storageService.deleteImage(imageSrc.getUrl());
+        storageService.deleteImage(imageSrc.getImageKey());
         imageSrcRepository.delete(imageSrc);
     }
 
-    public ImageSrcResponseDto updateImageSrc(UUID id, ImageSrcRequestDto dto, Product product) {
+    @Transactional
+    public ImageSrc unlinkImageSrc(UUID id) {
+        ImageSrc imageSrc = imageSrcRepository.findById(id).orElseThrow(
+                () -> new ImageSrcNotFoundException("Image src with id " + id + " not found")
+        );
+        deleteImageSrc(imageSrc.getId());
+        return imageSrc;
+    }
+
+    @Transactional
+    public ImageSrc updateImageSrc(UUID id, ImageSrcRequestDto dto, Product product) {
         deleteImageSrc(id);
         return createImageSrc(dto, product);
+    }
+
+    public String getImageSrcUrl(UUID id) {
+        return imageSrcRepository.findById(id).orElseThrow(
+                () -> new ImageSrcNotFoundException("Image src with id " + id + " not found")
+        ).getUrl();
     }
 
     private void validateImage(MultipartFile image) {
