@@ -127,6 +127,11 @@ public class ProductService {
         Product product = productRepository.findById(dto.getProductId()).orElseThrow(
                 () -> new ProductNotFoundException("Product with id: " + dto.getProductId() + " not found")
         );
+        if (product.getImages().stream().noneMatch(imageSrc -> imageSrc.getId().equals(dto.getImageSrcId()))) {
+            throw new ImageSrcDoesNotBelongToProductException(
+                    "Image with id " + dto.getImageSrcId() + " doesn't belong to product with id " + product.getId()
+            );
+        }
         ImageSrc imageSrc = imageSrcService.unlinkImageSrc(dto.getImageSrcId());
         product.getImages().remove(imageSrc);
 
