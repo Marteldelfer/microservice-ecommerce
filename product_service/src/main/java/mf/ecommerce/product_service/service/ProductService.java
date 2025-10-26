@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import mf.ecommerce.product_service.dto.*;
 import mf.ecommerce.product_service.exception.ImageSrcDoesNotBelongToProductException;
 import mf.ecommerce.product_service.exception.ProductNotFoundException;
+import mf.ecommerce.product_service.kafka.ProductEventProducer;
 import mf.ecommerce.product_service.mapper.ProductMapper;
 import mf.ecommerce.product_service.model.Category;
 import mf.ecommerce.product_service.model.ImageSrc;
@@ -27,6 +28,7 @@ public class ProductService {
     private final TagService tagService;
     private final CategoryService categoryService;
     private final ImageSrcService imageSrcService;
+    private final ProductEventProducer eventProducer;
 
     public ProductResponseDto getProductById(UUID id) {
         return ProductMapper.toDto(productRepository.findById(id).orElseThrow(
@@ -44,7 +46,9 @@ public class ProductService {
 
     public ProductResponseDto createProduct(ProductRequestDto dto) {
         log.info("Creating a new product with name {}", dto.getName());
-        return ProductMapper.toDto(productRepository.save(ProductMapper.toProduct(dto)));
+        Product saved = productRepository.save(ProductMapper.toProduct(dto));
+        eventProducer.sendProductCreatedEvent(saved);
+        return ProductMapper.toDto(saved);
     }
 
     public ProductResponseDto updateProduct(UUID id, ProductRequestDto dto) {
@@ -54,11 +58,17 @@ public class ProductService {
         );
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());
-        return ProductMapper.toDto(productRepository.save(product));
+        Product saved = productRepository.save(product);
+        eventProducer.sendProductUpdatedEvent(saved);
+        return ProductMapper.toDto(saved);
     }
 
     public void deleteProduct(UUID id) {
         log.info("Deleting product with id {}", id);
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new ProductNotFoundException("Product with id: " + id + " not found")
+        );
+        eventProducer.sendProductDeletedEvent(product);
         productRepository.deleteById(id);
     }
 
@@ -70,7 +80,9 @@ public class ProductService {
         );
         Tag tag = tagService.linkProduct(dto.getTagId(), product);
         product.getTags().add(tag);
-        return ProductMapper.toDto(productRepository.save(product));
+        Product saved = productRepository.save(product);
+        eventProducer.sendProductUpdatedEvent(saved);
+        return ProductMapper.toDto(saved);
     }
 
     @Transactional
@@ -81,7 +93,9 @@ public class ProductService {
         );
         Category category = categoryService.linkCategory(dto.getCategoryId(), product);
         product.getCategories().add(category);
-        return ProductMapper.toDto(productRepository.save(product));
+        Product saved = productRepository.save(product);
+        eventProducer.sendProductUpdatedEvent(saved);
+        return ProductMapper.toDto(saved);
     }
 
     @Transactional
@@ -96,7 +110,9 @@ public class ProductService {
             product.setMainImage(imageSrc.getUrl());
         }
         product.getImages().add(imageSrc);
-        return ProductMapper.toDto(productRepository.save(product));
+        Product saved = productRepository.save(product);
+        eventProducer.sendProductUpdatedEvent(saved);
+        return ProductMapper.toDto(saved);
     }
 
     @Transactional
@@ -107,7 +123,9 @@ public class ProductService {
         );
         Tag tag = tagService.unlinkProduct(dto.getTagId(), product);
         product.getTags().remove(tag);
-        return ProductMapper.toDto(productRepository.save(product));
+        Product saved = productRepository.save(product);
+        eventProducer.sendProductUpdatedEvent(saved);
+        return ProductMapper.toDto(saved);
     }
 
     @Transactional
@@ -118,7 +136,9 @@ public class ProductService {
         );
         Category category = categoryService.unlinkProduct(dto.getCategoryId(), product);
         product.getCategories().remove(category);
-        return ProductMapper.toDto(productRepository.save(product));
+        Product saved = productRepository.save(product);
+        eventProducer.sendProductUpdatedEvent(saved);
+        return ProductMapper.toDto(saved);
     }
 
     @Transactional
@@ -143,7 +163,9 @@ public class ProductService {
                 product.setMainImage(null);
             }
         }
-        return ProductMapper.toDto(productRepository.save(product));
+        Product saved = productRepository.save(product);
+        eventProducer.sendProductUpdatedEvent(saved);
+        return ProductMapper.toDto(saved);
     }
 
     public ProductResponseDto updateMainImage(LinkImageSrcRequestDto dto) {
@@ -158,6 +180,8 @@ public class ProductService {
         }
         log.info("Updating product with id {} main image to {}", product.getId(), url);
         product.setMainImage(url);
-        return ProductMapper.toDto(productRepository.save(product));
+        Product saved = productRepository.save(product);
+        eventProducer.sendProductUpdatedEvent(saved);
+        return ProductMapper.toDto(saved);
     }
 }

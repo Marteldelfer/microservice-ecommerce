@@ -117,4 +117,15 @@ public class GlobalExceptionHandler {
                 .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    @ExceptionHandler(JsonParsingExeption.class)
+    public ResponseEntity<ApiErrorResponse> handleJsonParsingException(JsonParsingExeption e) {
+        ApiErrorResponse response = ApiErrorResponse.builder()
+                .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.name())
+                .timestamp(Instant.now())
+                .errors(List.of(e.getMessage()))
+                .build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
 }
