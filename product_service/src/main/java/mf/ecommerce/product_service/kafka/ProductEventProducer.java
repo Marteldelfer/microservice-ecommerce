@@ -3,7 +3,7 @@ package mf.ecommerce.product_service.kafka;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import mf.ecommerce.product_service.exception.JsonParsingExeption;
+import mf.ecommerce.product_service.exception.JsonParsingException;
 import mf.ecommerce.product_service.mapper.ProductMapper;
 import mf.ecommerce.product_service.model.Product;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ public class ProductEventProducer {
         try {
             return objectMapper.writeValueAsString(productEvent);
         } catch (JsonProcessingException e) {
-            throw new JsonParsingExeption(e.getMessage());
+            throw new JsonParsingException(e.getMessage());
         }
     }
 
