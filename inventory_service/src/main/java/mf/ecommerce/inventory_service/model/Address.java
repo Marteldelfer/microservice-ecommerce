@@ -2,6 +2,8 @@ package mf.ecommerce.inventory_service.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -32,20 +34,11 @@ public class Address {
     private Double latitude;
     private Double longitude;
 
+    @CreationTimestamp
     private LocalDateTime createdAt;
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @OneToOne(fetch = FetchType.EAGER)
     private ProductProvider provider;
-
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 }
