@@ -1,5 +1,6 @@
 package mf.ecommerce.inventory_service.controller;
 
+import jakarta.validation.groups.Default;
 import lombok.AllArgsConstructor;
 import mf.ecommerce.inventory_service.dto.InventoryItemRequestDto;
 import mf.ecommerce.inventory_service.dto.InventoryItemResponseDto;
@@ -36,5 +37,28 @@ public class InventoryItemController {
         return ResponseEntity.ok(inventoryItemService.createInventoryItem(dto));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<InventoryItemResponseDto> updateInventoryItem(
+            @PathVariable UUID id,
+            @Validated({Default.class}) @RequestBody InventoryItemRequestDto dto
+    ) {
+        return ResponseEntity.ok(inventoryItemService.updateInventoryItem(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<InventoryItemResponseDto> deleteInventoryItem(@PathVariable UUID id) {
+        inventoryItemService.deleteInventoryItem(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/product/id/{id}")
+    public ResponseEntity<List<InventoryItemResponseDto>> getInventoryItemsByProductId(@PathVariable UUID id) {
+        return ResponseEntity.ok(inventoryItemService.getInventoryItemByProductId(id));
+    }
+
+    @GetMapping("/product/name/{name}")
+    public ResponseEntity<List<InventoryItemResponseDto>> getInventoryItemsByProductId(@PathVariable String name) {
+        return ResponseEntity.ok(inventoryItemService.getInventoryItemByProductName(name));
+    }
 
 }

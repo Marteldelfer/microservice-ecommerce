@@ -30,4 +30,9 @@ public class InventoryItemMapper {
                 .build();
     }
 
+    public static void update(InventoryItem item, InventoryItemRequestDto dto) {
+        if (dto.getPrice() != null) {item.setPrice(dto.getPrice());}
+        if (dto.getQuantity() != null) {item.setQuantity(dto.getQuantity());}
+        if (dto.getFullPrice() != null) {item.setFullPrice(dto.getFullPrice());}
+    }
 }

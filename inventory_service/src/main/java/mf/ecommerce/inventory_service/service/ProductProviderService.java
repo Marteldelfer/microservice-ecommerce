@@ -64,9 +64,15 @@ public class ProductProviderService {
         );
     }
 
-    public ProductProvider linkInventoryItem(UUID providerId, InventoryItem inventoryItem) {
+    public void linkInventoryItem(UUID providerId, InventoryItem inventoryItem) {
         ProductProvider provider = getProductProviderEntity(providerId);
         provider.getInventoryItems().add(inventoryItem);
-        return providerRepository.save(provider);
+        providerRepository.save(provider);
+    }
+
+    public void unlinkInventoryItem(UUID providerId, InventoryItem inventoryItem) {
+        ProductProvider provider = getProductProviderEntity(providerId);
+        provider.getInventoryItems().remove(inventoryItem);
+        providerRepository.save(provider);
     }
 }

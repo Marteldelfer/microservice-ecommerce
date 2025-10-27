@@ -28,9 +28,15 @@ public class ProductProjectionService {
         return projectionRepository.findAll();
     }
 
-    public ProductProjection linkInventoryItem(UUID productId, InventoryItem inventoryItem) {
+    public void linkInventoryItem(UUID productId, InventoryItem inventoryItem) {
         ProductProjection projection = getById(productId);
         projection.getInventoryItems().add(inventoryItem);
-        return projectionRepository.save(projection);
+        projectionRepository.save(projection);
+    }
+
+    public void unlinkInventoryItem(UUID id, InventoryItem inventoryItem) {
+        ProductProjection projection = getById(id);
+        projection.getInventoryItems().remove(inventoryItem);
+        projectionRepository.save(projection);
     }
 }

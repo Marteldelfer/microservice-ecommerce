@@ -23,6 +23,6 @@ public class ProductProjection {
     private Boolean active;
     private LocalDateTime updatedAt;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "product")
     private List<InventoryItem> inventoryItems;
 }

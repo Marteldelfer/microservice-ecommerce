@@ -43,4 +43,29 @@ public class InventoryItemService {
         productProviderService.linkInventoryItem(dto.getProviderId(), inventoryItem);
         return InventoryItemMapper.toDto(inventoryItemRepository.save(inventoryItem));
     }
+
+    public List<InventoryItemResponseDto> getInventoryItemByProductId(UUID productId) {
+        return inventoryItemRepository.findAllByProductId(productId).stream().map(InventoryItemMapper::toDto).toList();
+    }
+
+    public List<InventoryItemResponseDto> getInventoryItemByProductName(String name) {
+        return inventoryItemRepository.findAllByProductName(name).stream().map(InventoryItemMapper::toDto).toList();
+    }
+
+    public InventoryItemResponseDto updateInventoryItem(UUID id, InventoryItemRequestDto dto) {
+        InventoryItem inventoryItem = inventoryItemRepository.findById(id).orElseThrow(
+                () -> new InventoryItemNotFoundException("InventoryItem with id " + id + " not found")
+        );
+        InventoryItemMapper.update(inventoryItem, dto);
+        return InventoryItemMapper.toDto(inventoryItemRepository.save(inventoryItem));
+    }
+
+    public void deleteInventoryItem(UUID id) {
+        InventoryItem inventoryItem = inventoryItemRepository.findById(id).orElseThrow(
+                () -> new InventoryItemNotFoundException("InventoryItem with id " + id + " not found")
+        );
+        productProjectionService.unlinkInventoryItem(inventoryItem.getProduct().getId(), inventoryItem);
+        productProviderService.unlinkInventoryItem(inventoryItem.getProvider().getId(), inventoryItem);
+        inventoryItemRepository.deleteById(id);
+    }
 }
