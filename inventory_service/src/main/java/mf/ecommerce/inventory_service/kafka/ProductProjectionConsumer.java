@@ -19,7 +19,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class ProductProjectionService {
+public class ProductProjectionConsumer {
 
     private final ProductProjectionRepository productProjectionRepository;
     private final ObjectMapper objectMapper;
@@ -43,6 +43,7 @@ public class ProductProjectionService {
             default -> throw new InvalidEventTypeException("Unknown event type: " + productEvent.getType());
         }
     }
+
 
     private void createProductProjection(ProductProjection projection) {
         if (productProjectionRepository.existsById(projection.getId())) {

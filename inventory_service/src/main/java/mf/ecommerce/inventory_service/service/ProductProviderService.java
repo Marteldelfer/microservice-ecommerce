@@ -7,6 +7,7 @@ import mf.ecommerce.inventory_service.dto.ProductProviderResponseDto;
 import mf.ecommerce.inventory_service.exception.ProductProviderNotFoundException;
 import mf.ecommerce.inventory_service.mapper.ProductProviderMapper;
 import mf.ecommerce.inventory_service.model.Address;
+import mf.ecommerce.inventory_service.model.InventoryItem;
 import mf.ecommerce.inventory_service.model.ProductProvider;
 import mf.ecommerce.inventory_service.repository.ProductProviderRepository;
 import org.springframework.stereotype.Service;
@@ -57,4 +58,15 @@ public class ProductProviderService {
         providerRepository.deleteById(id);
     }
 
+    public ProductProvider getProductProviderEntity(UUID id) {
+        return providerRepository.findById(id).orElseThrow(
+                () -> new ProductProviderNotFoundException("ProductProvider with id " + id + " not found")
+        );
+    }
+
+    public ProductProvider linkInventoryItem(UUID providerId, InventoryItem inventoryItem) {
+        ProductProvider provider = getProductProviderEntity(providerId);
+        provider.getInventoryItems().add(inventoryItem);
+        return providerRepository.save(provider);
+    }
 }

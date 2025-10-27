@@ -1,5 +1,6 @@
 package mf.ecommerce.inventory_service.mapper;
 
+import mf.ecommerce.inventory_service.dto.ProductResponseDto;
 import mf.ecommerce.inventory_service.kafka.ProductEvent;
 import mf.ecommerce.inventory_service.model.ProductProjection;
 
@@ -16,4 +17,12 @@ public class ProductProjectionMapper {
                 .build();
     }
 
+    public static ProductResponseDto toDto(ProductProjection product) {
+        return ProductResponseDto.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .mainImage(product.getMainImage())
+                .build();
+    }
 }
