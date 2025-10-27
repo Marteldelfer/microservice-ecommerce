@@ -1,11 +1,14 @@
 package mf.ecommerce.product_service.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.groups.Default;
 import lombok.AllArgsConstructor;
 import mf.ecommerce.product_service.dto.*;
 import mf.ecommerce.product_service.service.ProductService;
+import mf.ecommerce.product_service.validators.CreateValidationGroup;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,14 +38,16 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductRequestDto requestDto) {
+    public ResponseEntity<ProductResponseDto> createProduct(
+            @Validated({CreateValidationGroup.class, Default.class}) @RequestBody ProductRequestDto requestDto
+    ) {
         ProductResponseDto response =  productService.createProduct(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> updateProduct(
-            @Valid @RequestBody ProductRequestDto requestDto,
+            @Validated({Default.class}) @RequestBody ProductRequestDto requestDto,
             @PathVariable UUID id
     ) {
         return ResponseEntity.ok(productService.updateProduct(id, requestDto));

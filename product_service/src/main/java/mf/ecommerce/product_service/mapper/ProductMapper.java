@@ -26,7 +26,7 @@ public class ProductMapper {
                 .build();
     }
 
-    public static Product toProduct(ProductRequestDto dto) {
+    public static Product toEntity(ProductRequestDto dto) {
         return Product.builder()
                 .name(dto.getName())
                 .description(dto.getDescription())
@@ -50,4 +50,8 @@ public class ProductMapper {
                 .build();
     }
 
+    public static void update(Product product, ProductRequestDto dto) {
+        if (dto.getName() != null) {product.setName(dto.getName());}
+        if (dto.getDescription() != null) {product.setDescription(dto.getDescription());}
+    }
 }

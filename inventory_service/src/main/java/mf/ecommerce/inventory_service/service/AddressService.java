@@ -33,7 +33,7 @@ public class AddressService {
 
     public Address createAddress(AddressRequestDto dto, ProductProvider provider) {
         log.info("Creating address from request with zip code {}", dto.getZipCode());
-        Address address = AddressMapper.toAddress(dto);
+        Address address = AddressMapper.toEntity(dto);
         address.setProvider(provider);
         return addressRepository.save(address);
     }

@@ -6,7 +6,7 @@ import mf.ecommerce.product_service.model.Tag;
 
 public class TagMapper {
 
-    public static Tag toTag(TagRequestDto dto) {
+    public static Tag toEntity(TagRequestDto dto) {
         return Tag.builder()
                 .name(dto.getName())
                 .description(dto.getDescription())
@@ -18,5 +18,10 @@ public class TagMapper {
                 .name(tag.getName())
                 .description(tag.getDescription())
                 .build();
+    }
+
+    public static void update(Tag tag, TagRequestDto dto) {
+        if (dto.getName() != null) {tag.setName(tag.getName());}
+        if (dto.getDescription() != null) {tag.setDescription(tag.getDescription());}
     }
 }

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import mf.ecommerce.inventory_service.dto.InventoryItemRequestDto;
 import mf.ecommerce.inventory_service.dto.InventoryItemResponseDto;
 import mf.ecommerce.inventory_service.service.InventoryItemService;
-import mf.ecommerce.inventory_service.validator.CreateInventoryItemValidationGroup;
+import mf.ecommerce.inventory_service.validators.CreateValidationGroup;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +32,7 @@ public class InventoryItemController {
 
     @PostMapping
     public ResponseEntity<InventoryItemResponseDto> createInventoryItem(
-            @Validated({CreateInventoryItemValidationGroup.class}) @RequestBody InventoryItemRequestDto dto
+            @Validated({CreateValidationGroup.class, Default.class}) @RequestBody InventoryItemRequestDto dto
     ) {
         return ResponseEntity.ok(inventoryItemService.createInventoryItem(dto));
     }

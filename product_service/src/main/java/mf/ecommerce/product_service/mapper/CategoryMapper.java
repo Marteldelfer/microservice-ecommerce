@@ -6,7 +6,7 @@ import mf.ecommerce.product_service.model.Category;
 
 public class CategoryMapper {
 
-    public static Category toCategory(CategoryRequestDto dto) {
+    public static Category toEntity(CategoryRequestDto dto) {
         return Category.builder()
                 .name(dto.getName())
                 .description(dto.getDescription())
@@ -19,5 +19,10 @@ public class CategoryMapper {
                 .name(category.getName())
                 .description(category.getDescription())
                 .build();
+    }
+
+    public static void update(Category category, CategoryRequestDto dto) {
+        if (dto.getName() != null) {category.setName(dto.getName());}
+        if (dto.getDescription() != null) {category.setDescription(dto.getDescription());}
     }
 }

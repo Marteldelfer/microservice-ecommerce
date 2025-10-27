@@ -12,8 +12,8 @@ public class ImageSrcRequestDto {
 
     @Size(max = 255, message = "Alt text to long")
     private final String altText;
-    @NotNull
+    @NotNull(message = "OrderIndex is required")
     private final int orderIndex;
-    @NotNull
+    @NotNull(message = "Image is required")
     private final MultipartFile image;
 }

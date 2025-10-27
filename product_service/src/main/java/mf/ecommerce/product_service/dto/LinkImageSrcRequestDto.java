@@ -10,8 +10,8 @@ import java.util.UUID;
 @Getter
 public class LinkImageSrcRequestDto {
 
-    @NotNull
+    @NotNull(message = "product id is required")
     private final UUID productId;
-    @NotNull
+    @NotNull(message = "imageSrc id is required")
     private final UUID imageSrcId;
 }

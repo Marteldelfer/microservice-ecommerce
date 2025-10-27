@@ -6,7 +6,7 @@ import mf.ecommerce.inventory_service.model.Address;
 
 public class AddressMapper {
 
-    public static Address toAddress(AddressRequestDto dto) {
+    public static Address toEntity(AddressRequestDto dto) {
         return Address.builder()
                 .street(dto.getStreet())
                 .number(dto.getNumber())

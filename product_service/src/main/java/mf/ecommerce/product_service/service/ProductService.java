@@ -46,7 +46,7 @@ public class ProductService {
 
     public ProductResponseDto createProduct(ProductRequestDto dto) {
         log.info("Creating a new product with name {}", dto.getName());
-        Product saved = productRepository.save(ProductMapper.toProduct(dto));
+        Product saved = productRepository.save(ProductMapper.toEntity(dto));
         eventProducer.sendProductCreatedEvent(saved);
         return ProductMapper.toDto(saved);
     }
@@ -56,8 +56,7 @@ public class ProductService {
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new ProductNotFoundException("Product with id: " + id + " not found")
         );
-        product.setName(dto.getName());
-        product.setDescription(dto.getDescription());
+        ProductMapper.update(product, dto);
         Product saved = productRepository.save(product);
         eventProducer.sendProductUpdatedEvent(saved);
         return ProductMapper.toDto(saved);

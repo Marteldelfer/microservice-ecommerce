@@ -42,8 +42,8 @@ class TagServiceTest {
         when(tagRepository.existsByName("Tag")).thenReturn(false);
 
         TagRequestDto dto = new TagRequestDto("Tag", "Description");
-        Tag toSave = TagMapper.toTag(dto);
-        Tag saved = TagMapper.toTag(dto);
+        Tag toSave = TagMapper.toEntity(dto);
+        Tag saved = TagMapper.toEntity(dto);
         saved.setId(UUID.randomUUID());
 
         when(tagRepository.save(toSave)).thenReturn(saved);
@@ -60,8 +60,8 @@ class TagServiceTest {
         when(tagRepository.existsByName("Tag")).thenReturn(true);
 
         TagRequestDto dto = new TagRequestDto("Tag", "Description");
-        Tag toSave = TagMapper.toTag(dto);
-        Tag saved = TagMapper.toTag(dto);
+        Tag toSave = TagMapper.toEntity(dto);
+        Tag saved = TagMapper.toEntity(dto);
         saved.setId(UUID.randomUUID());
 
         when(tagRepository.save(toSave)).thenReturn(saved);

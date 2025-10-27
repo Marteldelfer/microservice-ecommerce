@@ -37,8 +37,8 @@ public class ProductProjectionConsumer {
     public void productUpdateConsumer(@Payload String event) {
         ProductEvent productEvent = parseJson(event);
         switch (productEvent.getType()) {
-            case CREATED -> createProductProjection(ProductProjectionMapper.toProductProjection(productEvent));
-            case UPDATED -> updateProductProjection(ProductProjectionMapper.toProductProjection(productEvent));
+            case CREATED -> createProductProjection(ProductProjectionMapper.toEntity(productEvent));
+            case UPDATED -> updateProductProjection(ProductProjectionMapper.toEntity(productEvent));
             case DELETED -> deleteProductProjection(productEvent.getId());
             default -> throw new InvalidEventTypeException("Unknown event type: " + productEvent.getType());
         }

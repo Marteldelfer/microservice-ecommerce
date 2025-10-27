@@ -10,8 +10,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class LinkTagRequestDto {
 
-    @NotNull
+    @NotNull(message = "product id is required")
     private final UUID productId;
-    @NotNull
+    @NotNull(message = "tag id is required")
     private final UUID tagId;
 }

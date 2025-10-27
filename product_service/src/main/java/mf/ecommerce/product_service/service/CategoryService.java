@@ -41,15 +41,14 @@ public class CategoryService {
         if (categoryRepository.existsByName(dto.getName())) {
             throw new CategoryWithNameAlreadyExistsException("Category with name " + dto.getName() + " already exists");
         }
-        return CategoryMapper.toDto(categoryRepository.save(CategoryMapper.toCategory(dto)));
+        return CategoryMapper.toDto(categoryRepository.save(CategoryMapper.toEntity(dto)));
     }
 
     public CategoryResponseDto updateCategory(UUID id, CategoryRequestDto dto) {
         Category category = categoryRepository.findById(id).orElseThrow(
                 () -> new CategoryNotFoundException("Category not found with id: " + id)
         );
-        category.setName(dto.getName());
-        category.setDescription(dto.getDescription());
+        CategoryMapper.update(category, dto);
         return CategoryMapper.toDto(categoryRepository.save(category));
     }
 

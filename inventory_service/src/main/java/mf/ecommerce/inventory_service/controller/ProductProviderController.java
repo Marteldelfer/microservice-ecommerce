@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import mf.ecommerce.inventory_service.dto.ProductProviderRequestDto;
 import mf.ecommerce.inventory_service.dto.ProductProviderResponseDto;
 import mf.ecommerce.inventory_service.service.ProductProviderService;
-import mf.ecommerce.inventory_service.validator.CreateProductProviderValidationGroup;
+import mf.ecommerce.inventory_service.validators.CreateValidationGroup;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -33,7 +33,7 @@ public class ProductProviderController {
 
     @PostMapping
     public ResponseEntity<ProductProviderResponseDto> createProvider(
-            @Validated({Default.class, CreateProductProviderValidationGroup.class}) @RequestBody ProductProviderRequestDto dto
+            @Validated({Default.class, CreateValidationGroup.class}) @RequestBody ProductProviderRequestDto dto
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(productProviderService.createProductProvider(dto));
     }

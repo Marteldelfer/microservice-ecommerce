@@ -1,13 +1,15 @@
 package mf.ecommerce.product_service.controller;
 
-import jakarta.validation.Valid;
+import jakarta.validation.groups.Default;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mf.ecommerce.product_service.dto.TagRequestDto;
 import mf.ecommerce.product_service.dto.TagResponseDto;
 import mf.ecommerce.product_service.service.TagService;
+import mf.ecommerce.product_service.validators.CreateValidationGroup;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,14 +34,16 @@ public class TagController {
     }
 
     @PostMapping
-    public ResponseEntity<TagResponseDto> createTag(@Valid @RequestBody TagRequestDto requestDto) {
+    public ResponseEntity<TagResponseDto> createTag(
+            @Validated({CreateValidationGroup.class, Default.class}) @RequestBody TagRequestDto requestDto
+    ) {
         TagResponseDto responseDto = tagService.createTag(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<TagResponseDto> updateTag(
-            @Valid @RequestBody TagRequestDto requestDto,
+            @Validated({Default.class}) @RequestBody TagRequestDto requestDto,
             @PathVariable UUID id
     ) {
         return ResponseEntity.ok(tagService.updateTag(id, requestDto));

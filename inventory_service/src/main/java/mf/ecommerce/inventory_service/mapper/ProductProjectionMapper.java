@@ -6,7 +6,7 @@ import mf.ecommerce.inventory_service.model.ProductProjection;
 
 public class ProductProjectionMapper {
 
-    public static ProductProjection toProductProjection(ProductEvent productEvent) {
+    public static ProductProjection toEntity(ProductEvent productEvent) {
         return ProductProjection.builder()
                 .id(productEvent.getId())
                 .name(productEvent.getName())

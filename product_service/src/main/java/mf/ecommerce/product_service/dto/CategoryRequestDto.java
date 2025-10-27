@@ -4,13 +4,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import mf.ecommerce.product_service.validators.CreateValidationGroup;
 
 @Getter
 @AllArgsConstructor
 public class CategoryRequestDto {
 
-    @NotBlank(message = "Name is required")
-    private final String name;
+    @NotBlank(message = "Name is required", groups = CreateValidationGroup.class)
+    private String name;
     @Size(max = 255, message = "Description too long")
-    private final String description;
+    @NotBlank(message = "Description is required", groups = CreateValidationGroup.class)
+    private String description;
 }

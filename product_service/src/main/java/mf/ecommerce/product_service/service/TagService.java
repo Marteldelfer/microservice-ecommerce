@@ -27,15 +27,14 @@ public class TagService {
         if (tagRepository.existsByName(dto.getName())) {
             throw new TagWithNameAlreadyExistsException("Tag with name " + dto.getName() + " already exists");
         }
-        return TagMapper.toDto(tagRepository.save(TagMapper.toTag(dto)));
+        return TagMapper.toDto(tagRepository.save(TagMapper.toEntity(dto)));
     }
 
     public TagResponseDto updateTag(UUID id, TagRequestDto dto) {
         Tag tag = tagRepository.findById(id).orElseThrow(
                 () -> new TagNotFoundException("Tag with id " + id + " not found")
         );
-        tag.setName(dto.getName());
-        tag.setDescription(dto.getDescription());
+        TagMapper.update(tag, dto);
         return TagMapper.toDto(tagRepository.save(tag));
     }
 

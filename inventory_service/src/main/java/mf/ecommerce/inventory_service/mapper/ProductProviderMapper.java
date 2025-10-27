@@ -23,7 +23,7 @@ public class ProductProviderMapper {
                 .description(dto.getDescription())
                 .email(dto.getEmail())
                 .phone(dto.getPhone())
-                .address(AddressMapper.toAddress(dto.getAddress()))
+                .address(AddressMapper.toEntity(dto.getAddress()))
                 .build();
     }
 
