@@ -1,5 +1,7 @@
 package mf.ecommerce.product_service.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.groups.Default;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,21 +21,25 @@ import java.util.UUID;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/tags")
+@Tag(name = "Tag", description = "API for managing tags")
 public class TagController {
 
     private final TagService tagService;
 
     @GetMapping
+    @Operation(summary = "Get all tags")
     public ResponseEntity<List<TagResponseDto>> getAllTags() {
         return ResponseEntity.ok(tagService.getAllTags());
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get tag by id")
     public ResponseEntity<TagResponseDto> getTagById(@PathVariable UUID id) {
         return ResponseEntity.ok(tagService.getTag(id));
     }
 
     @PostMapping
+    @Operation(summary = "Create new tag")
     public ResponseEntity<TagResponseDto> createTag(
             @Validated({CreateValidationGroup.class, Default.class}) @RequestBody TagRequestDto requestDto
     ) {
@@ -42,6 +48,7 @@ public class TagController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update tag")
     public ResponseEntity<TagResponseDto> updateTag(
             @Validated({Default.class}) @RequestBody TagRequestDto requestDto,
             @PathVariable UUID id
@@ -50,6 +57,7 @@ public class TagController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete tag by id")
     public ResponseEntity<Void> deleteTag(@PathVariable UUID id) {
         tagService.deleteTag(id);
         return ResponseEntity.noContent().build();

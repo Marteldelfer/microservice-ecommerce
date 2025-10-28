@@ -1,5 +1,7 @@
 package mf.ecommerce.inventory_service.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.groups.Default;
 import lombok.AllArgsConstructor;
 import mf.ecommerce.inventory_service.dto.ProductProviderRequestDto;
@@ -17,21 +19,25 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/providers")
 @AllArgsConstructor
+@Tag(name = "Provider", description = "API for managing product providers")
 public class ProductProviderController {
 
     private final ProductProviderService productProviderService;
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get product provider by id")
     public ResponseEntity<ProductProviderResponseDto> getProvider(@PathVariable UUID id) {
         return ResponseEntity.ok(productProviderService.getProductProvider(id));
     }
 
     @GetMapping
+    @Operation(summary = "Get all product providers")
     public ResponseEntity<List<ProductProviderResponseDto>> getAllProviders() {
         return ResponseEntity.ok(productProviderService.getAllProductProviders());
     }
 
     @PostMapping
+    @Operation(summary = "Create new product provider")
     public ResponseEntity<ProductProviderResponseDto> createProvider(
             @Validated({Default.class, CreateValidationGroup.class}) @RequestBody ProductProviderRequestDto dto
     ) {
@@ -39,6 +45,7 @@ public class ProductProviderController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update product provider")
     public ResponseEntity<ProductProviderResponseDto> updateProvider(
             @PathVariable UUID id,
             @Validated({Default.class})  @RequestBody ProductProviderRequestDto dto
@@ -47,6 +54,7 @@ public class ProductProviderController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete product provider by id")
     public ResponseEntity<Void> deleteProvider(@PathVariable UUID id) {
         productProviderService.deleteProductProvider(id);
         return ResponseEntity.noContent().build();

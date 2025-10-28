@@ -1,5 +1,7 @@
 package mf.ecommerce.product_service.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.groups.Default;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,27 +21,32 @@ import java.util.UUID;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/categories")
+@Tag(name = "Category", description = "API for managing categories")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
     @GetMapping
+    @Operation(summary = "Get all categories")
     public ResponseEntity<List<CategoryResponseDto>> getCategories() {
         return ResponseEntity.ok(categoryService.getAllCategories());
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get category by id")
     public ResponseEntity<CategoryResponseDto> getCategory(@PathVariable UUID id) {
         CategoryResponseDto responseDto = categoryService.getCategoryById(id);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @GetMapping("/name/{name}")
+    @Operation(summary = "Get category by name")
     public ResponseEntity<CategoryResponseDto> getCategoryByName(@PathVariable String name) {
         return ResponseEntity.ok(categoryService.getCategoryByName(name));
     }
 
     @PostMapping
+    @Operation(summary = "Create new category")
     public ResponseEntity<CategoryResponseDto> createCategory(
             @Validated({CreateValidationGroup.class, Default.class}) @RequestBody CategoryRequestDto requestDto
     ) {
@@ -48,6 +55,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update category")
     public ResponseEntity<CategoryResponseDto> updateCategory(
             @Validated({Default.class}) @RequestBody CategoryRequestDto requestDto,
             @PathVariable UUID id
@@ -57,6 +65,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete category by id")
     public ResponseEntity<Void> deleteCategory(@PathVariable UUID id) {
         log.info("Deleting category with id {}", id);
         categoryService.deleteCategory(id);
