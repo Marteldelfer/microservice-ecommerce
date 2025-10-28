@@ -1,5 +1,6 @@
 package mf.ecommerce.inventory_service.service;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mf.ecommerce.inventory_service.dto.AddressRequestDto;
@@ -31,6 +32,7 @@ public class AddressService {
         return addressRepository.findAll().stream().map(AddressMapper::toDto).toList();
     }
 
+    @Transactional
     public Address createAddress(AddressRequestDto dto, ProductProvider provider) {
         log.info("Creating address from request with zip code {}", dto.getZipCode());
         Address address = AddressMapper.toEntity(dto);
@@ -38,6 +40,7 @@ public class AddressService {
         return addressRepository.save(address);
     }
 
+    @Transactional
     public AddressResponseDto updateAddress(UUID id, AddressRequestDto dto) {
         log.info("Updating address from request with id {}", id);
         Address address = addressRepository.findById(id).orElseThrow(

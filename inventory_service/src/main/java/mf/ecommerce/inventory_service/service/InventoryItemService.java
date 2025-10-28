@@ -1,5 +1,6 @@
 package mf.ecommerce.inventory_service.service;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mf.ecommerce.inventory_service.dto.InventoryItemRequestDto;
@@ -34,6 +35,7 @@ public class InventoryItemService {
         return inventoryItemRepository.findAll().stream().map(InventoryItemMapper::toDto).toList();
     }
 
+    @Transactional
     public InventoryItemResponseDto createInventoryItem(InventoryItemRequestDto dto) {
         ProductProjection product = productProjectionService.getById(dto.getProductId());
         ProductProvider provider = productProviderService.getProductProviderEntity(dto.getProviderId());
@@ -52,6 +54,7 @@ public class InventoryItemService {
         return inventoryItemRepository.findAllByProductName(name).stream().map(InventoryItemMapper::toDto).toList();
     }
 
+    @Transactional
     public InventoryItemResponseDto updateInventoryItem(UUID id, InventoryItemRequestDto dto) {
         InventoryItem inventoryItem = inventoryItemRepository.findById(id).orElseThrow(
                 () -> new InventoryItemNotFoundException("InventoryItem with id " + id + " not found")
@@ -60,6 +63,7 @@ public class InventoryItemService {
         return InventoryItemMapper.toDto(inventoryItemRepository.save(inventoryItem));
     }
 
+    @Transactional
     public void deleteInventoryItem(UUID id) {
         InventoryItem inventoryItem = inventoryItemRepository.findById(id).orElseThrow(
                 () -> new InventoryItemNotFoundException("InventoryItem with id " + id + " not found")

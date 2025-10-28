@@ -1,5 +1,6 @@
 package mf.ecommerce.inventory_service.service;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mf.ecommerce.inventory_service.dto.ProductProviderRequestDto;
@@ -33,6 +34,7 @@ public class ProductProviderService {
         return providerRepository.findAll().stream().map(ProductProviderMapper::toDto).toList();
     }
 
+    @Transactional
     public ProductProviderResponseDto createProductProvider(ProductProviderRequestDto dto) {
         log.info("Creating product provider with name {}", dto.getName());
         ProductProvider provider = ProductProviderMapper.toEntity(dto);
@@ -42,6 +44,7 @@ public class ProductProviderService {
         return ProductProviderMapper.toDto(providerRepository.save(provider));
     }
 
+    @Transactional
     public ProductProviderResponseDto updateProductProvider(UUID id, ProductProviderRequestDto dto) {
         log.info("Updating product provider with id {}", id);
         ProductProvider provider = providerRepository.findById(id).orElseThrow(
@@ -50,6 +53,7 @@ public class ProductProviderService {
         return ProductProviderMapper.toDto(providerRepository.save(ProductProviderMapper.update(provider, dto)));
     }
 
+    @Transactional
     public void deleteProductProvider(UUID id) {
         log.info("Deleting product provider with id {}", id);
         if (!providerRepository.existsById(id)) {
@@ -64,12 +68,14 @@ public class ProductProviderService {
         );
     }
 
+    @Transactional
     public void linkInventoryItem(UUID providerId, InventoryItem inventoryItem) {
         ProductProvider provider = getProductProviderEntity(providerId);
         provider.getInventoryItems().add(inventoryItem);
         providerRepository.save(provider);
     }
 
+    @Transactional
     public void unlinkInventoryItem(UUID providerId, InventoryItem inventoryItem) {
         ProductProvider provider = getProductProviderEntity(providerId);
         provider.getInventoryItems().remove(inventoryItem);

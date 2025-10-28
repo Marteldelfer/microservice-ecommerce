@@ -1,5 +1,6 @@
 package mf.ecommerce.inventory_service.service;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mf.ecommerce.inventory_service.exception.ProductProjectionNotFoundException;
@@ -28,12 +29,14 @@ public class ProductProjectionService {
         return projectionRepository.findAll();
     }
 
+    @Transactional
     public void linkInventoryItem(UUID productId, InventoryItem inventoryItem) {
         ProductProjection projection = getById(productId);
         projection.getInventoryItems().add(inventoryItem);
         projectionRepository.save(projection);
     }
 
+    @Transactional
     public void unlinkInventoryItem(UUID id, InventoryItem inventoryItem) {
         ProductProjection projection = getById(id);
         projection.getInventoryItems().remove(inventoryItem);
