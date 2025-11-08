@@ -1,4 +1,4 @@
-package mf.ecommerce.account_service.dto;
+package mf.ecommerce.auth_service.dto;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -36,6 +36,7 @@ public class AccountMapper {
                 .email(account.getEmail())
                 .firstName(account.getFirstname())
                 .lastName(account.getLastname())
+                .role(account.getRole().toString())
                 .password(password)
                 .build();
     }

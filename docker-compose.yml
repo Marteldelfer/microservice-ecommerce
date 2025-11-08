@@ -105,8 +105,28 @@ services:
       dockerfile: Dockerfile
       context: auth_service
     container_name: auth_service
+    env_file:
+      - ./keys/keycloakKeys
+    depends_on:
+      - keycloak
     ports:
       - "8004:8000"
+    networks:
+      - internal
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    command:
+      - "start-dev"
+      - "--import-realm"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
     networks:
       - internal
 

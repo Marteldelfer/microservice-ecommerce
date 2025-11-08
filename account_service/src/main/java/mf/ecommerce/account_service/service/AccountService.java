@@ -14,7 +14,6 @@ import mf.ecommerce.account_service.model.Account;
 import mf.ecommerce.account_service.repository.AccountRepository;
 import mf.ecommerce.account_service.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -67,20 +66,15 @@ public class AccountService {
 
     private void createAuthUser(AuthRequestDto dto) {
         log.info("Sending auth user request with id {}", dto.getId());
-        Boolean created = restClient.post()
-                .uri("/accounts")
-                .body(dto)
-                .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, (_, _) -> {
-                    throw new FailedToCreateAuthUserException("Failed to create auth user with id " + dto.getId());
-                })
-                .onStatus(HttpStatusCode::is5xxServerError, (_, _) -> {
-                    throw new FailedToCreateAuthUserException("Failed to create auth user with id " + dto.getId());
-                })
-                .body(Boolean.class);
-        if (Boolean.FALSE.equals(created)) {
-            throw new FailedToCreateAuthUserException("Failed to create auth user with id " + dto.getId());
+        try {
+            restClient.post()
+                    .uri("/accounts")
+                    .body(dto)
+                    .retrieve()
+                    .toBodilessEntity();
+            log.info("Auth user has been created");
+        } catch (Exception e) {
+            throw new FailedToCreateAuthUserException("Failed to create auth user: " + e.getMessage());
         }
     }
-
 }
