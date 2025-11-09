@@ -1,4 +1,4 @@
-FROM openjdk:25-jdk-slim as builder
+FROM eclipse-temurin:25 as builder
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ COPY src src
 
 RUN ./mvnw clean package
 
-FROM openjdk:25-jdk-slim
+FROM eclipse-temurin:25
 
 WORKDIR /app
 

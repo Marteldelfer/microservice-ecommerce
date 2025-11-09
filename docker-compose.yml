@@ -1,5 +1,5 @@
 services:
-  product_service:
+  product-service:
     build:
       context: ./product_service
       dockerfile: Dockerfile
@@ -127,6 +127,18 @@ services:
       - "8080:8080"
     volumes:
       - ./keycloak:/opt/keycloak/data/import
+    networks:
+      - internal
+
+  api_gateway:
+    build:
+      dockerfile: Dockerfile
+      context: ./api_gateway
+    container_name: api_gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - AUTH_SERVICE_URL=http://auth-service:8000
     networks:
       - internal
 
