@@ -2,10 +2,11 @@ package mf.ecommerce.auth_service.service;
 
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
-import mf.ecommerce.auth_service.dto.AuthRequestDto;
+import mf.ecommerce.auth_service.dto.AuthUserRequestDto;
 import mf.ecommerce.auth_service.exception.KeycloakPasswordAssignmentException;
 import mf.ecommerce.auth_service.exception.KeycloakRoleAssignmentException;
 import mf.ecommerce.auth_service.exception.KeycloakUserCreationException;
+import mf.ecommerce.auth_service.exception.KeycloakUserNotFoundException;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -31,8 +33,8 @@ public class UserService {
         this.realm = realm;
     }
 
-    public void createKeycloakUser(AuthRequestDto dto) {
-        log.info("Creating keycloak user with id {}", dto.getId());
+    public void createKeycloakUser(AuthUserRequestDto dto) {
+        log.info("Creating keycloak user with email {}", dto.getEmail());
         RealmResource realmResource = keycloakClient.realm(realm);
         UsersResource usersResource = realmResource.users();
 
@@ -43,12 +45,31 @@ public class UserService {
 
         if (statusFamily == Response.Status.Family.SUCCESSFUL) {
             String userId = CreatedResponseUtil.getCreatedId(response);
-            log.info("Created user with id {}", userId);
-            assignUserRole(userId, dto.getRole());
-            assignUserPassword(userId, dto.getPassword());
+            try {
+                log.info("Created user with id {}", userId);
+                assignUserRole(userId, dto.getRole());
+                assignUserPassword(userId, dto.getPassword());
+            } catch (Exception e) {
+                usersResource.delete(user.getId()); // revert changes
+                throw new RuntimeException(e);
+            }
         } else {
-            throw new KeycloakUserCreationException("Unable to create keycloak user: " +response.getStatusInfo().getReasonPhrase());
+            throw new KeycloakUserCreationException("Unable to create keycloak user: " + response.getStatusInfo().getReasonPhrase());
         }
+    }
+
+    public void validateUser(String email) {
+        log.info("Validating user with email {}", email);
+        RealmResource realmResource = keycloakClient.realm(realm);
+        List<UserRepresentation> userList = realmResource.users().searchByEmail(email, true);
+
+        if (userList.isEmpty()) {
+            throw new KeycloakUserNotFoundException("Did not find user with email " + email);
+        }
+        UserRepresentation user = userList.getFirst();
+        user.setEnabled(true);
+
+        realmResource.users().get(user.getId()).update(user);
     }
 
     private void assignUserPassword(String id, String password) {
@@ -80,7 +101,7 @@ public class UserService {
         }
     }
 
-    private UserRepresentation createUserRepresentation(AuthRequestDto dto) {
+    private UserRepresentation createUserRepresentation(AuthUserRequestDto dto) {
         UserRepresentation user = new UserRepresentation();
         user.setUsername(dto.getEmail());
         user.setEmail(dto.getEmail());
