@@ -123,10 +123,30 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_FEATURES: token-exchange,admin-fine-grained-authz
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak_db:5432/db
+      KC_DB_USERNAME: username
+      KC_DB_PASSWORD: password
+      KC_LOG_LEVEL: INFO
     ports:
       - "8080:8080"
     volumes:
       - ./keycloak:/opt/keycloak/data/import
+    networks:
+      - internal
+    depends_on:
+      - keycloak_db
+
+  keycloak_db:
+    image: postgres
+    container_name: keycloak_db
+    environment:
+      - POSTGRES_USER=username
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=db
+    ports:
+      - "5004:5432"
     networks:
       - internal
 
