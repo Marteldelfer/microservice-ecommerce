@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: api_gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: product-service-route
+              uri: http://product-service:8000
+              predicates:
+                - Path=/api/products
+              filters:
+                - StripPrefix=1
+                - name: RoleValidation
+                  args:
+                    role: "CUSTOMER"
+
+
+
+server:
+  port: 8000
