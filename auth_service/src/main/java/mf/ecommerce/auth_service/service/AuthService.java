@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import mf.ecommerce.auth_service.dto.LoginRequestDto;
 import mf.ecommerce.auth_service.exception.KeycloakOAuthTokenCreationException;
 import mf.ecommerce.auth_service.exception.KeycloakTokenCreationException;
+import mf.ecommerce.auth_service.kafka.AccountEventProducer;
+import mf.ecommerce.auth_service.util.JwtClaimsMapper;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -25,12 +27,14 @@ public class AuthService {
     private final String clientId;
     private final String clientSecret;
     private final RestClient restClient;
+    private final AccountEventProducer accountEventProducer;
 
     public AuthService(
             @Value("${keycloak.auth-server-url:defaultUrl}") String authServerUrl,
             @Value("${keycloak.realm:defaultRealm}") String realm,
             @Value("${keycloak.resource:defaultResource}") String clientId,
-            @Value("${keycloak.credentials.secret:defaultSecret}") String clientSecret
+            @Value("${keycloak.credentials.secret:defaultSecret}") String clientSecret,
+            AccountEventProducer accountEventProducer
     ) {
         this.authServerUrl = authServerUrl;
         this.realm = realm;
@@ -39,6 +43,7 @@ public class AuthService {
         this.restClient = RestClient.builder()
                 .baseUrl(authServerUrl)
                 .build();
+        this.accountEventProducer = accountEventProducer;
     }
 
     public String createLocalToken(LoginRequestDto dto) {
@@ -80,8 +85,11 @@ public class AuthService {
                     })
                     .toEntity(AccessTokenResponse.class)
                     .getBody();
+
             if (response != null) {
-                return response.getToken();
+                String token = response.getToken();
+                accountEventProducer.sendAccountCreationEvent(JwtClaimsMapper.toEvent(token));
+                return token;
             } else {
                 throw new KeycloakOAuthTokenCreationException("Token response was null");
             }
